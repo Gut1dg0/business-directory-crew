@@ -1,0 +1,107 @@
+research_task:
+  description: >
+    Gather factual information
+    about 10 of the {topic} in {city} such as rating in Google Business, contact information,
+    address and business website.
+    Make sure to use reliable sources and provide accurate data.
+    Gather information that also informs why businesses in {city}
+    stand out. Make sure you find any interesting, accurate and relevant information given
+    the current year is {current_year}.
+
+    Above all, make sure the information is accurate and up-to-date. Do not make assumptions
+    or use information that cannot be verified. If you are unsure about any details,
+    it's better to leave them out than to include potentially incorrect information.
+  expected_output: >
+    Information from several sources about {topic} in {city}.
+  agent: researcher
+
+writing_task:
+ description: >
+   Write a a compelling and engaging blog post article on {topic} in {city}.
+   Use the information provided by the researcher to create content
+   outlined in the following structure:
+   1. Introduction: Briefly introduce the topic and its relevance to the audience.
+   2. Main Content: List 10 of the best businesses in {city} related to {topic}.
+      For each business, include info in the following order:
+      - 2 or 3 paragraphs describing the business, its offerings, and what makes it unique.
+      - Rating: (e.g. 4.9)
+      - Location: (street address, city, state, zip code)
+      - Contact: (phone number)
+      - Website: Visit Website (It will be a hyperlink that says 'Visit Website')
+   3. Conclusion: Summarize the key points and encourage the audience to explore these businesses.
+   Ensure the content is engaging, informative, and well-structured.
+   4. Include a FAQ section at the end of the article with 5 questions and answers related to the topic.
+ expected_output: >
+   A well-structured and engaging blog post article structured in text format.
+ agent: writer
+
+web_scraping_task:
+ description: >
+    Visit the following URL: {reference_url}.
+    Analyze its structure, identifying:
+      - All sections, headings, subheadings, and formatting
+      - Any embedded iframes
+      - Pay special attention to the 'Frequently Asked Questions' section and how it works to make the questions collapsible.
+
+    Your final answer MUST be a JSON-like outline of the page structure, just the page structure
+    not the text content, including:
+      - Title
+      - Headings
+      - Sections
+      - Media (images, videos, iframes)
+      - FAQ entries
+ expected_output: >
+    A JSON-style outline showing just the structure of the page, including
+    title, headings, sections, iframe srcs.
+ agent: web_scraper
+
+development_task:
+ description: >
+    Write a new webpage using the provided structure from the web_scraper
+    and insert the content provided by the writer.
+
+    The structure includes iframes. Make sure to follow the iframe format below:
+    <iframe style="border: 0;" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCoBIfL49CBb6UlWj93R5QdD_PzRYCr63U&amp;q=businessname Lynchburg Va&amp;zoom=12" width="100%" height="405" allowfullscreen="allowfullscreen"></iframe>.
+    Replace "businessname" with the actual business name for each listing and if the business name includes an '&' character, replace it for the word 'and'.
+    Make sure to place the iframe to the right of the first paragraphs of each business listing.
+    
+    Below the iframe, add two stacked buttons of the same width as the iframe:
+    1. A button that says "Website" that links to the business website, if it exists.
+    2. A button that displays the business contact like this "(xxx) xxx-xxxx" if it exists.
+    Use the following format for the buttons:
+    <div style="background-color: #1073D2"><a href="https://businesswebsite.com" target="_blank" style="text-decoration: none; color: #ffffff"></a></div>
+
+    If the structure includes FAQ section at the end, format it as an accordion with
+    each question as a clickable element that expands to show the answer.
+
+    Make sure that the following entries on each business listing ar bolded.
+    Rating:
+    Location:
+    Contact:
+    Website:
+
+    Your final answer MUST be valid HTML that mirrors the reference structure
+    and includes the respective iframe after each business listing and an expandible FAQ section
+    at the end of the webpage.
+
+    Feel free to include any necessary JavaScript or CSS to ensure the 'Frequently Asked Questions'
+    section is collapsible. It should display the question and expand to show the answer.
+
+    Avobe all, make sure you don't use the content from the reference webpage.
+    Use the content provided by the writer to fill in the webpage.
+    The content must be about {topic} in {city}.
+ expected_output: >
+    A fully formatted HTML string representing a full webpage with the new topic.
+ agent: developer
+
+publishing_task:
+  description: >
+    Publish the HTML content to the configured WordPress site at:
+    https://philt178.sg-host.com/wp-json/wp/v2/pages.
+
+    Use the WordPress REST API to upload it as a new page titled: "{topic}".
+    
+    Your final answer MUST be the link to the created WordPress page.
+  expected_output: >
+    URL of the published WordPress page.
+  agent: publisher
